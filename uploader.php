@@ -283,7 +283,6 @@ load_plugin_textdomain('wp-download_monitor', '/');
 				$wp_dlm_db_relationships = $wpdb->prefix."download_monitor_relationships";
 				$wp_dlm_db_formats = $wpdb->prefix."download_monitor_formats";
 				$wp_dlm_db_stats = $wpdb->prefix."download_monitor_stats";
-				$wp_dlm_db_log = $wpdb->prefix."download_monitor_log";
 				$wp_dlm_db_meta = $wpdb->prefix."download_monitor_file_meta";
 											
 				//get postdata

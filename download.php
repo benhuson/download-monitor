@@ -97,7 +97,8 @@ do_action('wp_dlm_download');
 	// set table name	
 	$wp_dlm_db = $wpdb->prefix."download_monitor_files";
 	$wp_dlm_db_stats = $wpdb->prefix."download_monitor_stats";
-	$wp_dlm_db_log = $wpdb->prefix."download_monitor_log";
+	
+	$logs = new WP_DLM_Logs();
 	
 	$id = stripslashes($_GET['id']);
 	if ($id) {
@@ -204,7 +205,9 @@ do_action('wp_dlm_download');
 				if (in_array($ipAddress, $blacklist)) $blocked = true;
 				
 				if (get_option('wp_dlm_log_downloads')=='yes' && $log_timeout>0) {					
-					$old_date = $wpdb->get_var( $wpdb->prepare( "SELECT date FROM $wp_dlm_db_log WHERE ip_address = '$ipAddress' AND download_id = ".$d->id." ORDER BY date DESC limit 1;") );
+					$old_date = $logs->get_log_date( $d->id, array(
+						'ip_address' => $ipAddress
+					) );
 					if ($old_date) {
 						$old_date = strtotime($old_date);
 						$old_date = strtotime('+'.$log_timeout.' MIN', $old_date);
@@ -239,12 +242,12 @@ do_action('wp_dlm_download');
 			   
 		   		// Log download details
 		   		if ($dupe==false && $blocked==false && get_option('wp_dlm_log_downloads')=='yes') {
-					$timestamp = current_time('timestamp', 1);					
-					$user = $user_ID;
-					if (empty($user)) $user = '0';			
-					$wpdb->query( $wpdb->prepare( "INSERT INTO $wp_dlm_db_log (download_id, user_id, date, ip_address) VALUES (%s, %s, %s, %s);", $d->id, $user, date("Y-m-d H:i:s" ,$timestamp), $ipAddress ) );
+					$logs->log_download( $d->id, array(
+						'ip_address' => $ipAddress,
+						'user'       => $user_ID
+					) );
 				}
-			   
+				
 			   // Select a mirror
 			   $mirrors = trim($d->mirrors);
 			   if (!empty($mirrors) && get_option('wp_dlm_auto_mirror')!=='no') {			   

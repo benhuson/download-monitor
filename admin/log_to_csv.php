@@ -25,15 +25,11 @@ require_once(ABSPATH.'wp-admin/admin.php');
 
 load_plugin_textdomain('wp-download_monitor', WP_PLUGIN_URL.'/download-monitor/languages/', 'download-monitor/languages/');
 
-global $wpdb, $wp_dlm_db, $wp_dlm_db_log;
+global $wpdb, $wp_dlm_db;
 
-$logs = $wpdb->get_results("
-	SELECT $wp_dlm_db.*, $wp_dlm_db_log.ip_address, $wp_dlm_db_log.date, $wp_dlm_db_log.user_id
-	FROM $wp_dlm_db_log  
-	INNER JOIN $wp_dlm_db ON $wp_dlm_db_log.download_id = $wp_dlm_db.id 
-	ORDER BY $wp_dlm_db_log.date DESC;
-	");
-	
+$wp_dlm_log = new WP_DLM_Logs();
+$logs = $wp_dlm_log->get_logs();
+
 $log = "Download ID,Title,File,User,IP Address,Date\n";
 
 if (!empty($logs)) {

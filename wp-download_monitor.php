@@ -81,6 +81,7 @@ Author URI: http://mikejolley.com
 	include_once(WP_PLUGIN_DIR.'/download-monitor/init.php');						/* Inits the DB/Handles updates */
 	include_once(WP_PLUGIN_DIR.'/download-monitor/classes/downloadable_file.class.php');		/* Download Class */
 	include_once(WP_PLUGIN_DIR.'/download-monitor/classes/download_taxonomies.class.php');		/* Taxonomy Class */ 
+	include_once(WP_PLUGIN_DIR.'/download-monitor/classes/logs.class.php');			/* Logs Class */ 
 
 	if (is_admin()) :
 		include_once(WP_PLUGIN_DIR.'/download-monitor/admin/admin.php');					/* Admin Interface */
@@ -179,7 +180,7 @@ if (!empty($dlm_url)) add_filter('mod_rewrite_rules', 'wp_dlm_rewrite');
 	
 function wp_dlm_init_hooks() {
 
-	global $wp_db_version, $wpdb, $dlm_build, $wp_dlm_root, $wp_dlm_image_url, $wp_dlm_db, $wp_dlm_db_taxonomies, $wp_dlm_db_relationships, $wp_dlm_db_formats, $wp_dlm_db_stats, $wp_dlm_db_log, $wp_dlm_db_meta, $def_format, $dlm_url, $downloadtype, $downloadurl, $wp_dlm_db_exists, $download_taxonomies, $download_formats, $download_formats_array, $download_formats_names_array, $meta_blank, $download2taxonomy_array, $download_meta_data_array;
+	global $wp_db_version, $wpdb, $dlm_build, $wp_dlm_root, $wp_dlm_image_url, $wp_dlm_db, $wp_dlm_db_taxonomies, $wp_dlm_db_relationships, $wp_dlm_db_formats, $wp_dlm_db_stats, $wp_dlm_db_meta, $def_format, $dlm_url, $downloadtype, $downloadurl, $wp_dlm_db_exists, $download_taxonomies, $download_formats, $download_formats_array, $download_formats_names_array, $meta_blank, $download2taxonomy_array, $download_meta_data_array;
 	
 	$wp_dlm_build = get_option('wp_dlm_build');
 	

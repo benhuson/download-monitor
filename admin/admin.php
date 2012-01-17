@@ -286,8 +286,10 @@ add_action('admin_head', 'wp_dlm_head');
 function wp_dlm_admin()
 {
 	//set globals
-	global $wpdb,$wp_dlm_root,$wp_dlm_db,$wp_dlm_db_taxonomies,$wp_dlm_db_formats,$wp_dlm_db_stats, $wp_dlm_db_meta, $wp_dlm_db_log, $wp_dlm_db_relationships,$download_taxonomies;
-
+	global $wpdb,$wp_dlm_root,$wp_dlm_db,$wp_dlm_db_taxonomies,$wp_dlm_db_formats,$wp_dlm_db_stats, $wp_dlm_db_meta, $wp_dlm_db_relationships,$download_taxonomies;
+	
+	$log = new WP_DLM_Logs();
+	
 	// turn off magic quotes
 	wp_dlm_magic();
 
@@ -853,8 +855,7 @@ function wp_dlm_admin()
 					$query_delete = "DELETE FROM $wp_dlm_db_stats WHERE download_id=".$wpdb->escape( $_GET['id'] ).";";
 					$wpdb->query($query_delete);
 					
-					$query_delete = "DELETE FROM $wp_dlm_db_log WHERE download_id=".$wpdb->escape( $_GET['id'] ).";";
-					$wpdb->query($query_delete);
+					$log->delete_log( $_GET['id'] );
 					
 					$query_delete = "DELETE FROM $wp_dlm_db_meta WHERE download_id=".$wpdb->escape( $_GET['id'] ).";";
 					$wpdb->query($query_delete);
@@ -930,8 +931,7 @@ function wp_dlm_admin()
 					$query_delete = "DELETE FROM $wp_dlm_db_stats WHERE download_id=$bid;";
 					$wpdb->query($query_delete);
 					
-					$query_delete = "DELETE FROM $wp_dlm_db_log WHERE download_id=$bid;";
-					$wpdb->query($query_delete);
+					$log->delete_log( $bid );
 					
 					$query_delete = "DELETE FROM $wp_dlm_db_meta WHERE download_id=$bid;";
 					$wpdb->query($query_delete);

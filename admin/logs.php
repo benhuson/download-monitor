@@ -26,7 +26,9 @@
 function wp_dlm_log()
 {
 	//set globals
-	global $wpdb,$wp_dlm_root,$wp_dlm_db,$wp_dlm_db_taxonomies,$wp_dlm_db_formats, $wp_dlm_db_log;
+	global $wpdb,$wp_dlm_root,$wp_dlm_db,$wp_dlm_db_taxonomies,$wp_dlm_db_formats;
+	
+	$wp_dlm_logs = new WP_DLM_Logs();
 	
 	echo '<div class="download_monitor">';
 	
@@ -34,7 +36,7 @@ function wp_dlm_log()
 	if (!empty($action)) {
 		switch ($action) {
 				case "clear_logs" :
-					$wpdb->query("DELETE FROM $wp_dlm_db_log;");
+					$wp_dlm_logs->clear_logs();
 				break;
 		}
 	}	
@@ -64,17 +66,14 @@ function wp_dlm_log()
 				}
 									
 				// Figure out the limit for the query based on the current page number. 
-				$from = (($page * 20) - 20); 
-			
-				$paged_select = sprintf("SELECT $wp_dlm_db.*, $wp_dlm_db_log.ip_address, $wp_dlm_db_log.date, $wp_dlm_db_log.user_id
-					FROM $wp_dlm_db_log  
-					INNER JOIN $wp_dlm_db ON $wp_dlm_db_log.download_id = $wp_dlm_db.id 
-					ORDER BY $wp_dlm_db_log.date DESC LIMIT %s,20;",
-						$wpdb->escape( $from ));
-					
-				$logs = $wpdb->get_results($paged_select);
-				$total = $wpdb->get_var("SELECT COUNT(*) FROM $wp_dlm_db_log INNER JOIN $wp_dlm_db ON $wp_dlm_db_log.download_id = $wp_dlm_db.id;");
-			
+				$from = (($page * 20) - 20);
+				
+				$logs = $wp_dlm_logs->get_logs( array(
+					'offset'   => $from,
+					'limit'    => 20
+				) );
+				$total = $wp_dlm_logs->count_logs();
+				
 				// Figure out the total number of pages. Always round up using ceil() 
 				$total_pages = ceil($total / 20);
 			
